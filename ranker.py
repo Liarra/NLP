@@ -14,7 +14,13 @@ class text_breaker(object):
 		for i in range(0,len(maxpath)-1):
 			text_piece=self.text[maxpath[i]: maxpath[i+1]]
 			component=components_mapping[maxpath[i]][maxpath[i+1]]
-			text_to_components.append( (text_piece, component) )
+			
+			if component!=None:
+				component_object=component(text_piece)
+			else:
+				component_object=None
+			
+			text_to_components.append( (text_piece, component_object) )
 			
 		return text_to_components
 	
@@ -31,12 +37,16 @@ class text_breaker(object):
 				for component in components:
 					component_rank=self.ranker.rank_component(self.text[edge_start: edge_end], component)
 					new_rank=component_rank+self.ranker.rank_chunk(self.text[edge_start: edge_end])
+					#print ("%d-%d:%d"%(edge_start, edge_end, new_rank))
 					if new_rank>old_rank:
 						self.graph[edge_start][edge_end]=new_rank
+						old_rank=new_rank
 						if component_rank>0:
+							#print ("assigning %s to '%s'" %(component, self.text[edge_start: edge_end]))
 							edges_to_components[edge_start][edge_end]=component
 						
 		self.components_mapping=edges_to_components
+		#print (self.graph)
 		return edges_to_components
 				
 	def _build_graph_for_text_(self, text):
@@ -64,12 +74,14 @@ class ranker(object):
 		rank=0;
 		rank+=self.rankLength(text)
 		rank+=self.rankPunctuation(text)
+		
 		return rank
 		
 	def rank_component(self, text, component):
 		rank=0;
 		rank+=self.rankTags(text,component)
 		rank+=self.rankRegexp(text,component)
+		#print (rank)
 		return rank
 		
 	def rankTags(self, text, component):
@@ -83,23 +95,24 @@ class ranker(object):
 	
 	def rankRegexp(self,text,component):
 		import re
-		p=re.compile(component.regexp)
+		p=re.compile(component.regexp, re.IGNORECASE)
 		text=text.strip()
 		if p.match(text):
 			#print (p.match(text))
-			return 5
+			return 15
 		return 0
 	
 	def rankLength(self,text):
 		shortest=10
-		longest=50
+		longest=100
 		if len(text)>longest or len(text)<shortest:
-			return -1
+			return -5
 		return 0
 		
 	def rankPunctuation(self, text):
 		signs=['.', ',']
 		text = text.rstrip()
+		if len(text)<1: return 0
 		if text[len(text)-1] in signs:
-			return 1
+			return 5
 		return 0
