@@ -23,9 +23,11 @@ items in the preceeding sets.
 """
     from functools import reduce
     data = defaultdict(set)
-    for x, y in graph.items():
-        for z in y:
-            data[z[0]].add(x)
+    # for x, y in graph.items():
+    for start_edge in graph.keys():
+        for end_edge in graph[start_edge].keys():
+        # for z in y:
+            data[end_edge].add(start_edge)
 
     # Ignore self dependencies.
     for k, v in data.items():
@@ -60,7 +62,10 @@ def longestpathDAG(graph, startnode, endnode):
     ### MAIN PART
     comesfrom = dict()
     for node in order: # u
-        for nbr, nbrdist in graph[node]: # v
+
+        for nbr in graph[node].keys():
+            nbrdist=graph[node][nbr]
+        # for nbr, nbrdist in graph[node]: # v
             if dist[nbr] < dist[node] + nbrdist:
                 dist[nbr] = dist[node] + nbrdist
                 comesfrom[nbr] = node
