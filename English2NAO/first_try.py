@@ -3,7 +3,7 @@ from robot_commands import *
 from ranker import text_breaker
 
 
-components = [say_command, wait_command, button_press]
+components = [say_command, wait_command, move_command, button_press]
 
 # text=input("Enter your requirement:\n")
 
@@ -11,7 +11,7 @@ components = [say_command, wait_command, button_press]
 #text="When I press \"Y\", "
 text = '''The robot says 'hi', then waits for 5 seconds. Then it tells 'My name is NAO'.
 Then it starts dancing, jumping, telling 'I hate you so much you stupid humans'. Then it stops and waits for 20 seconds, then
-bursts out laughing '''
+bursts out laughing and waves'''
 #text="Then it tells 'My name is NAO'."
 text2 = "Robot asks the child's name and waits for another 5 seconds"
 

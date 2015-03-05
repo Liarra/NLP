@@ -1,5 +1,6 @@
 from component import component
 
+
 class sequence_command(component):
     tags = ["then", "after that"]
     regexp = r"(then|after that)"
@@ -9,6 +10,7 @@ class sequence_command(component):
 
     def __repr__(self):
         return "&"
+
 
 class say_command(component):
     tags = ["say", "tell", "ask"]
@@ -64,3 +66,32 @@ class wait_command(component):
 
     def __repr__(self):
         return "wait(%d)" % self.ms
+
+
+from os import listdir
+from os.path import isfile, join, splitext
+
+
+class move_command(component):
+    tags = []
+    regexp = r"(?!x)x"  # A regex that never matches
+
+    def __init__(self, string):
+        for move in move_command.tags:
+            if move in string:
+                movement_text = open(join(moves_folder, move_names[move])).read()
+                self.move = movement_text
+
+    def __repr__(self):
+        return "stiff (1, 500, 0) & " + self.move + " & stiff (0, 500, 0)"
+
+
+moves_folder = "moves"
+move_files = [f for f in listdir(moves_folder) if isfile(join(moves_folder, f))]
+
+move_names = {}
+for m in move_files:
+    move_names[splitext(m)[0]] = m
+
+move_command.move_names_to_files = move_names
+move_command.tags = move_names.keys()
