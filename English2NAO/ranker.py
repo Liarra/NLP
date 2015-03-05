@@ -1,9 +1,10 @@
 import longestpath
 
+
 class text_breaker(object):
     def __init__(self, text):
-        self.text = text
-        self.graph = self._build_graph_for_text_(text)
+        self.text = text.replace("\n"," ")
+        self.graph = self._build_graph_for_text_(self.text)
         self.components_mapping = {}
         self.ranker = ranker()
 
@@ -14,6 +15,7 @@ class text_breaker(object):
         text_to_components = []
         for i in range(0, len(maxpath) - 1):
             text_piece = self.text[maxpath[i]: maxpath[i + 1]]
+            text_piece=text_piece.strip()
             component = components_mapping[maxpath[i]][maxpath[i + 1]]
 
             if component != None:
@@ -43,7 +45,7 @@ class text_breaker(object):
                         self.graph[edge_start][edge_end] = new_rank
                         old_rank = new_rank
                         if component_rank > 0:
-                            #print ("assigning %s to '%s'" %(component, self.text[edge_start: edge_end]))
+                            print ("assigning %s to '%s' with rank %d" %(component, self.text[edge_start: edge_end], new_rank))
                             edges_to_components[edge_start][edge_end] = component
 
         self.components_mapping = edges_to_components
@@ -63,9 +65,9 @@ class text_breaker(object):
         graph = {}
         for i in range(0, len(edges)):
             connections = {}
-            for j in range(i + 2, min(len(edges), i+12)):
-            #for j in range(i + 1, min(len(edges), i+5)):
-            #for j in range(i + 1, len(edges)):
+            for j in range(i + 1, min(len(edges), i + 12)):
+                # for j in range(i + 1, min(len(edges), i+5)):
+                # for j in range(i + 1, len(edges)):
                 connections[edges[j]] = 0
             graph[edges[i]] = connections
 
@@ -74,14 +76,14 @@ class text_breaker(object):
 
 class ranker(object):
     def rank_chunk(self, text):
-        rank = 0;
+        rank = 0
         rank += self.rankLength(text)
         rank += self.rankPunctuation(text)
 
         return rank
 
     def rank_component(self, text, component):
-        rank = 0;
+        rank = 0
         rank += self.rankTags(text, component)
         rank += self.rankRegexp(text, component)
         # print (rank)
@@ -89,10 +91,11 @@ class ranker(object):
 
     def rankTags(self, text, component):
         # edge_text=self.text[edge_start:edge_end]
-        sum = 0;
+        text = text.lower()
+        sum = 0
         for tag in component.tags:
             if tag in text:
-                sum += 1
+                sum += 5
         rank = sum
         return rank
 

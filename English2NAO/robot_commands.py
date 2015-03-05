@@ -1,17 +1,5 @@
 from component import component
 
-
-class sequence_command(component):
-    tags = ["then", "after that"]
-    regexp = r"(then|after that)"
-
-    def __init__(self, string):
-        pass
-
-    def __repr__(self):
-        return "&"
-
-
 class say_command(component):
     tags = ["say", "tell", "ask"]
     regexp = r"(say|tell|ask)(s|ing)? ['\"](?P<what>.+)['\"]"
