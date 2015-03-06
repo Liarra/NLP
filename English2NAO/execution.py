@@ -4,7 +4,7 @@ __author__ = 'NBUCHINA'
 
 class sequence(component):
     tags = ["after", "then", "next"]
-    regexp =r"(?!x)x"
+    regexp =r"(then|next)$"
 
     def __init__(self, string):
         pass
@@ -14,7 +14,7 @@ class sequence(component):
 
 class parallel(component):
     tags = ["and", "while", "same time"]
-    regexp = r"(?!x)x"
+    regexp = r"(and|while)$"
 
     def __init__(self, string):
         pass

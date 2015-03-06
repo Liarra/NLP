@@ -38,3 +38,15 @@ class button_press(component):
 
 class button_input_component(component):
     pass
+
+
+class unrecognised_component(component):
+    unrecognised_text = ""
+    tags = []
+    regexp = ""
+
+    def __init__(self, string):
+        self.unrecognised_text = string
+
+    def __repr__(self):
+        return "_NOT_RECOGNISED_ [%s]" % self.unrecognised_text

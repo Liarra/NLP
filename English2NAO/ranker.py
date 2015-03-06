@@ -1,9 +1,10 @@
+from component import unrecognised_component
 import longestpath
 
 
 class text_breaker(object):
     def __init__(self, text):
-        self.text = text.replace("\n"," ")
+        self.text = text.replace("\n", " ")
         self.graph = self._build_graph_for_text_(self.text)
         self.components_mapping = {}
         self.ranker = ranker()
@@ -15,13 +16,13 @@ class text_breaker(object):
         text_to_components = []
         for i in range(0, len(maxpath) - 1):
             text_piece = self.text[maxpath[i]: maxpath[i + 1]]
-            text_piece=text_piece.strip()
+            text_piece = text_piece.strip()
             component = components_mapping[maxpath[i]][maxpath[i + 1]]
 
-            if component != None:
+            if component is not None:
                 component_object = component(text_piece)
             else:
-                component_object = None
+                component_object = unrecognised_component(text_piece)
 
             text_to_components.append((text_piece, component_object))
 
@@ -45,7 +46,7 @@ class text_breaker(object):
                         self.graph[edge_start][edge_end] = new_rank
                         old_rank = new_rank
                         if component_rank > 0:
-                            print ("assigning %s to '%s' with rank %d" %(component, self.text[edge_start: edge_end], new_rank))
+                            # print ("assigning %s to '%s' with rank %d" %(component, self.text[edge_start: edge_end], new_rank))
                             edges_to_components[edge_start][edge_end] = component
 
         self.components_mapping = edges_to_components
