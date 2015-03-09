@@ -1,8 +1,9 @@
 from component import component
 
+
 class say_command(component):
     tags = ["say", "tell", "ask"]
-    regexp = r"(say|tell|ask)(s|ing)? ['\"](?P<what>.+)['\"]"
+    regexp = r"(say|tell|ask)(s|ing)? ['\"“](?P<what>.+)['\"”]"
 
     say_what = ""
 
@@ -14,7 +15,7 @@ class say_command(component):
         string = string.lower()
 
         m = p.search(string)
-        if (m == None):
+        if m is None:
             return
         self.say_what = m.group('what').replace(' ', '_')
 
@@ -58,6 +59,7 @@ class wait_command(component):
 
 from os import listdir
 from os.path import isfile, join, splitext
+import xml.etree.ElementTree as ET
 
 
 class move_command(component):
@@ -65,10 +67,20 @@ class move_command(component):
     regexp = r"(?!x)x"  # A regex that never matches
 
     def __init__(self, string):
-        for move in move_command.tags:
-            if move in string:
-                movement_text = open(join(moves_folder, move_names[move])).read()
-                self.move = movement_text
+        string = string.strip()
+        string = string.lower()
+
+        max = 0
+        for move_file in move_command.files_to_tags:
+            s = 0
+            move_tags = move_command.files_to_tags[move_file]
+            for tag in move_tags:
+                if tag in string:
+                    s += 1
+
+            if s > max:
+                max = s
+                self.move = move_command.files_to_moves[move_file]
 
     def __repr__(self):
         return "stiff (1, 500, 0) & " + self.move + " & stiff (0, 500, 0)"
@@ -77,9 +89,20 @@ class move_command(component):
 moves_folder = "moves"
 move_files = [f for f in listdir(moves_folder) if isfile(join(moves_folder, f))]
 
-move_names = {}
+move_tags = {}
+move_codes = {}
 for m in move_files:
-    move_names[splitext(m)[0]] = m
+    file = join(moves_folder, m)
 
-move_command.move_names_to_files = move_names
-move_command.tags = move_names.keys()
+    tree = ET.parse(file)
+    tags = [tag.text for tag in tree.findall('tag')]
+    move = tree.find('move').text
+
+    move_tags[splitext(m)] = tags
+    move_codes[splitext(m)] = move
+
+    move_command.tags.extend(tags)
+
+# move_command.tags = move_regex.keys()
+move_command.files_to_tags = move_tags
+move_command.files_to_moves = move_codes

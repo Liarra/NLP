@@ -13,8 +13,8 @@ class component(object):
 
 
 class button_press(component):
-    tags = ["when", "once", "as soon as", "press", "button"]
-    regexp = r"(when|once|as soon as) .* (press|type) ['\"]?(?P<button>.)['\"]?[ ,.]?"
+    tags = [ "press", "button"]
+    regexp = r"(press|type) ['\"]?(?P<button>.)['\"]?[ ,.]?"
 
     button = ''
 

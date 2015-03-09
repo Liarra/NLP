@@ -46,7 +46,7 @@ class text_breaker(object):
                         self.graph[edge_start][edge_end] = new_rank
                         old_rank = new_rank
                         if component_rank > 0:
-                            # print ("assigning %s to '%s' with rank %d" %(component, self.text[edge_start: edge_end], new_rank))
+                            print ("assigning %s to '%s' with rank %d" %(component, self.text[edge_start: edge_end], new_rank))
                             edges_to_components[edge_start][edge_end] = component
 
         self.components_mapping = edges_to_components
